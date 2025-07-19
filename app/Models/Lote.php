@@ -16,6 +16,11 @@ class Lote extends Model
 
     public function series()
     {
-        return $this->hasMany(Serie::class, 'producto_id', 'producto_id');
+        return $this->hasMany(Serie::class, 'lote_id');
+    }
+
+    public function seriesDisponibles()
+    {
+        return $this->hasMany(Serie::class, 'lote_id')->where('estado', 'disponible');
     }
 }

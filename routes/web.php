@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EntradaProductoController;
 use App\Http\Controllers\FiltrarProductoController;
 use App\Http\Controllers\ProductSearchController;
-
+use App\Http\Controllers\EntradaController;
+use App\Http\Controllers\VentaController;
+use App\Http\Controllers\TrasladoInventarioController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
@@ -22,14 +23,35 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/entrada-producto', [EntradaProductoController::class, 'create'])->name('entrada.create');
-    Route::post('/entrada-producto', [EntradaProductoController::class, 'store'])->name('entrada.store');
+    /* DASHBOARD */
+    Route::post('/buscar-producto', [ProductSearchController::class, 'buscar'])->name('buscar.producto');
+    Route::post('/buscar-datos-producto', [FiltrarProductoController::class, 'buscar'])->name('producto.buscar.ajax');
+
+    // Ruta para el formulario de la venta
+    Route::get('/venta/crear', [VentaController::class, 'create'])->name('ventas.create');
+
+    // Ruta para buscar productos (ajustado a la lógica del controlador)
+    Route::get('/venta/buscar', [VentaController::class, 'buscarProducto'])->name('ventas.buscar');
+
+    // Ruta para registrar la venta
+    Route::post('/ventas', [VentaController::class, 'store'])->name('ventas.store');
+
+
+    Route::get('traslados/create',           [TrasladoInventarioController::class, 'create'])->name('traslados.create');
+    Route::post('traslados',                 [TrasladoInventarioController::class, 'store'])->name('traslados.store');
+
+    // AJAX dinámico
+    Route::get('almacenes/{almacen}/productos', [TrasladoInventarioController::class, 'getProductos']);
+    Route::get('productos/{producto}/lotes',    [TrasladoInventarioController::class, 'getLotes']);
+    Route::get('lotes/{lote}/series',           [TrasladoInventarioController::class, 'getSeries']);
 });
 
-/* DASHBOARD */
-Route::post('/buscar-producto', [ProductSearchController::class, 'buscar'])->name('buscar.producto');
+/* ENTRADAS ROUTES */
+Route::middleware(['auth'])->group(function () {
+    Route::get('/entradas/create', [EntradaController::class, 'create'])->name('entradas.create');
+    Route::post('/entradas', [EntradaController::class, 'store'])->name('entradas.store');
+});
 
-Route::post('/buscar-datos-producto', [FiltrarProductoController::class, 'buscar'])->name('producto.buscar.ajax');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

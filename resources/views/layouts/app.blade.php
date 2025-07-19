@@ -10,27 +10,32 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <script src="//unpkg.com/alpinejs" defer></script>
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased h-screen">
+        <div class="min-h-screen dark:bg-gray-900">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <header class="bg-gradient-to-br from-primary-dark to-primary-soft shadow-lg border-b-4 border-primary">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        <h1 class="text-3xl font-bold text-accent drop-shadow">
                         {{ $header }}
+                    </h1>
                     </div>
                 </header>
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <div class="shadow-2xl p-4 md:p-12">
                 {{ $slot }}
-            </main>
+            </div>
         </div>
+        @stack('scripts')
     </body>
 </html>
