@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\MovimientoInventario;
 use App\Models\Inventario;
 use App\Models\Almacen;
+use App\Models\SocioComercial;
 use Illuminate\Support\Facades\Log;
 
 class VentaController extends Controller
@@ -19,10 +20,12 @@ class VentaController extends Controller
     {
         $almacenes = Almacen::all();
         $productos = Producto::with('marca')->get();
+        $clientes = SocioComercial::where('tipo_cliente', 1)->get();
 
         return view('ventas.create', [
             'almacenes' => $almacenes,
             'productos' => $productos,
+            'clientes' => $clientes
         ]);
     }
     public function buscarProducto(Request $request)
@@ -31,43 +34,70 @@ class VentaController extends Controller
         $almacenId = $request->input('almacen_id');
 
         // Buscar por código de producto
-        $producto = Producto::where('codigo', $input)->first();
+        $producto = Producto::with(['marca', 'categoria'])->where('codigo', $input)->first();
         if ($producto) {
             $lotes = $producto->lotes()->withCount(['series as disponibles' => function ($q) use ($almacenId) {
                 $q->where('estado', 'disponible')->where('almacen_id', $almacenId);
-            }])->get();
+            }])->get()->map(function ($lote) {
+                return [
+                    'id' => $lote->id,
+                    'numero_lote' => $lote->numero_lote,
+                    'fecha_fabricacion' => $lote->fecha_fabricacion,
+                    'fecha_vencimiento' => $lote->fecha_vencimiento,
+                    'estado' => $lote->estado,
+                    'tiene_invima' => $lote->tiene_invima,
+                    'disponibles' => $lote->disponibles
+                ];
+            });
 
-            $series = $producto->series()->where('estado', 'disponible')->where('almacen_id', $almacenId)->get();
+            $series = $producto->series()
+                ->where('estado', 'disponible')->where('almacen_id', $almacenId)
+                ->with(['lote', 'almacen'])
+                ->get();
 
             return response()->json([
                 'tipo' => 'producto',
-                'producto' => $producto,
+                'producto' => $producto, // Incluye marca, categoría
                 'lotes' => $lotes,
-                'series' => $series,
+                'series' => $series
             ]);
         }
 
         // Buscar por modelo
-        $producto = Producto::where('modelo', $input)->first();
+        $producto = Producto::with(['marca', 'categoria'])->where('modelo', $input)->first();
         if ($producto) {
             $lotes = $producto->lotes()->withCount(['series as disponibles' => function ($q) use ($almacenId) {
                 $q->where('estado', 'disponible')->where('almacen_id', $almacenId);
-            }])->get();
+            }])->get()->map(function ($lote) {
+                return [
+                    'id' => $lote->id,
+                    'numero_lote' => $lote->numero_lote,
+                    'fecha_fabricacion' => $lote->fecha_fabricacion,
+                    'fecha_vencimiento' => $lote->fecha_vencimiento,
+                    'estado' => $lote->estado,
+                    'tiene_invima' => $lote->tiene_invima,
+                    'disponibles' => $lote->disponibles
+                ];
+            });
 
-            $series = $producto->series()->where('estado', 'disponible')->where('almacen_id', $almacenId)->get();
+            $series = $producto->series()
+                ->where('estado', 'disponible')->where('almacen_id', $almacenId)
+                ->with(['lote', 'almacen'])
+                ->get();
 
             return response()->json([
                 'tipo' => 'producto',
                 'producto' => $producto,
                 'lotes' => $lotes,
-                'series' => $series,
+                'series' => $series
             ]);
         }
 
         // Buscar por lote
-        $lote = Lote::where('numero_lote', $input)->first();
+        $lote = Lote::with(['producto.marca', 'producto.categoria'])->where('numero_lote', $input)->first();
         if ($lote) {
-            $series = Serie::where('lote_id', $lote->id)
+            $series = Serie::with(['producto.marca', 'producto.categoria', 'almacen'])
+                ->where('lote_id', $lote->id)
                 ->where('estado', 'disponible')
                 ->where('almacen_id', $almacenId)
                 ->get();
@@ -75,12 +105,13 @@ class VentaController extends Controller
             return response()->json([
                 'tipo' => 'lote',
                 'lote' => $lote,
-                'series' => $series,
+                'series' => $series
             ]);
         }
 
         // Buscar por serie
-        $serie = Serie::where('numero_serie', $input)
+        $serie = Serie::with(['producto.marca', 'producto.categoria', 'lote', 'almacen'])
+            ->where('numero_serie', $input)
             ->where('estado', 'disponible')
             ->where('almacen_id', $almacenId)
             ->first();
@@ -97,16 +128,21 @@ class VentaController extends Controller
             'tipo' => 'none',
             'message' => 'No se encontró coincidencia.'
         ]);
+
+        return redirect()->route('ventas.create')->with('Venta Exitosa', true);
     }
+
 
     public function store(Request $request)
     {
         $request->validate([
             'almacen_id'    => 'required|exists:almacenes,id',
             'detalle_venta' => 'required',
+            'socio_comercial_id'  => 'required|exists:socios_comerciales,id',
         ]);
 
         $almacen_id = $request->input('almacen_id');
+        $socio_comercial_id = $request->input('socio_comercial_id');
         $detalle = json_decode($request->input('detalle_venta'), true);
 
         if (!is_array($detalle) || empty($detalle)) {
@@ -146,7 +182,7 @@ class VentaController extends Controller
                                 'producto_id'         => $serie->producto_id,
                                 'almacen_origen_id'   => $serie->almacen_id,
                                 'almacen_destino_id'  => $almacen_id,
-                                'socio_comercial_id'  => null,
+                                'socio_comercial_id'  => $socio_comercial_id,
                                 'usuario_id'          => Auth::id(),
                                 'tipo'                => 'traslado',
                                 'cantidad'            => 1,
@@ -177,7 +213,7 @@ class VentaController extends Controller
                             'producto_id'         => $serie->producto_id,
                             'almacen_origen_id'   => $almacen_id,
                             'almacen_destino_id'  => null,
-                            'socio_comercial_id'  => null,
+                            'socio_comercial_id'  => $socio_comercial_id,
                             'usuario_id'          => Auth::id(),
                             'tipo'                => 'salida',
                             'cantidad'            => 1,
@@ -205,7 +241,7 @@ class VentaController extends Controller
                                 'producto_id'         => $serie->producto_id,
                                 'almacen_origen_id'   => $serie->almacen_id,
                                 'almacen_destino_id'  => $almacen_id,
-                                'socio_comercial_id'  => null,
+                                'socio_comercial_id'  => $socio_comercial_id,
                                 'usuario_id'          => Auth::id(),
                                 'tipo'                => 'traslado',
                                 'cantidad'            => 1,
@@ -233,7 +269,7 @@ class VentaController extends Controller
                             'producto_id'         => $serie->producto_id,
                             'almacen_origen_id'   => $almacen_id,
                             'almacen_destino_id'  => null,
-                            'socio_comercial_id'  => null,
+                            'socio_comercial_id'  => $socio_comercial_id,
                             'usuario_id'          => Auth::id(),
                             'tipo'                => 'salida',
                             'cantidad'            => 1,
@@ -256,11 +292,25 @@ class VentaController extends Controller
             MovimientoInventario::insert($movimientos);
 
             DB::commit();
-            return redirect()->route('ventas.create')->with('success', 'Venta registrada, stock actualizado y traslados automáticos realizados si fue necesario.');
+            return redirect()->route('ventas.create')
+                ->with('venta_exitosa', true)
+                ->with('success', 'Venta registrada y stock actualizado.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error al guardar la venta: ' . $e->getMessage());
             return back()->with('error', 'Error al guardar la venta: ' . $e->getMessage());
         }
+    }
+    public function buscarCliente(Request $request)
+    {
+        $q = $request->input('q');
+        $clientes = SocioComercial::where('tipo_cliente', 1)
+            ->where(function ($query) use ($q) {
+                $query->where('nombre', 'like', "%$q%")
+                    ->orWhere('documento', 'like', "%$q%");
+            })
+            ->limit(10)
+            ->get(['id', 'nombre', 'documento']);
+        return response()->json($clientes);
     }
 }

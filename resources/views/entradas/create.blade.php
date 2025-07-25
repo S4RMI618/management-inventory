@@ -17,18 +17,18 @@
                     <div class="relative gap-2 space-y-2">
                         <label class="text-white">Buscar producto (nombre, modelo o código)</label>
                         <input id="producto-buscar" type="text"
-                            class="w-full border-2 border-primary-light rounded-xl bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
+                            class="w-full border-2 border-primary-light rounded-lg bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
                             autocomplete="off" value="">
                         <div id="resultado-producto"
-                            class="absolute left-0 right-0 border bg-white mt-1 rounded hidden max-h-60 overflow-auto z-50">
+                            class="absolute left-0 right-0 border bg-primary-dark mt-1 rounded hidden max-h-60 overflow-auto z-50">
                         </div>
                         <input type="hidden" name="producto_id" id="producto-id" value="{{ old('producto_id') }}">
                     </div>
 
                     <!-- 2) Mostrar producto seleccionado -->
                     <div id="producto-seleccionado"
-                        class="p-2 border-2 border-primary-light rounded-xl {{ old('producto_id') ? '' : 'hidden' }} bg-[#181F32] text-white">
-                        <strong>Producto:</strong>
+                        class="p-2 border-2 border-primary-light rounded-lg {{ old('producto_id') ? '' : 'hidden' }} bg-[#181F32] text-white">
+                        <strong>Producto Seleccionado:</strong>
                         <span id="producto-info"></span>
                     </div>
 
@@ -36,7 +36,7 @@
                     <div class="gap-2 space-y-2">
                         <label class="text-white">Almacén</label>
                         <select name="almacen_id" id="almacen_id"
-                            class="w-full border-2 border-primary-light rounded-xl bg-[#181F32] text-white px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
+                            class="w-full border-2 border-primary-light rounded-lg bg-[#181F32] text-white px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
                             required>
                             <option value="">-- Selecciona --</option>
                             @foreach ($almacenes as $almacen)
@@ -52,7 +52,7 @@
                     <div class="gap-2 space-y-2">
                         <label class="text-white">Series (una por línea o separadas por espacio)</label>
                         <textarea name="series" rows="5"
-                            class="w-full border-2 border-primary-light rounded-xl bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
+                            class="w-full border-2 border-primary-light rounded-lg bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
                             id="series-input" placeholder="Escanea o escribe las series aquí...">{{ old('series') }}</textarea>
                     </div>
 
@@ -69,7 +69,7 @@
                     <div class="space-y-2">
                         <label class="text-white">Número de Lote</label>
                         <input type="text" name="numero_lote"
-                            class="w-full border-2 border-primary-light rounded-xl bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
+                            class="w-full border-2 border-primary-light rounded-lg bg-[#181F32] text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
                             value="{{ old('numero_lote') }}">
                     </div>
 

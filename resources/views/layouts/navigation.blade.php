@@ -25,6 +25,9 @@
                     <x-nav-link :href="route('traslados.create')" :active="request()->routeIs('traslados.create')" class="text-white border-b-2 border-transparent hover:border-accent hover:text-accent transition-all duration-200 font-bold px-2 py-1">
                         {{ __('Traslado Productos') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('devoluciones.create')" :active="request()->routeIs('devoluciones.create')" class="text-white border-b-2 border-transparent hover:border-accent hover:text-accent transition-all duration-200 font-bold px-2 py-1">
+                        {{ __('Devolución Productos') }}
+                    </x-nav-link>
                 </div>
             </div>
             <!-- Settings Dropdown -->
@@ -85,6 +88,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('traslados.create')" :active="request()->routeIs('traslados.create')" class="hover:bg-accent hover:text-primary-dark transition-all duration-200">
                 {{ __('Traslado Productos') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('devoluciones.create')" :active="request()->routeIs('devoluciones.create')" class="hover:bg-accent hover:text-primary-dark transition-all duration-200">
+                {{ __('Devolución Productos') }}
             </x-responsive-nav-link>
         </div>
         <!-- Responsive Settings Options -->

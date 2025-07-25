@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-accent text-center">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
@@ -38,7 +38,7 @@
                             Fecha: {{ $mov->created_at->format('d/m/Y H:i') }}
                         </div>
                     </div>
-                    <div class="font-semibold text-accent">{{ rtrim(rtrim(number_format($mov->cantidad, 2, '.', ''), '0'), '.') }}</div>
+                    <div class="font-semibold text-accent">{{ $mov->cantidad }}</div>
                 </div>
             @empty
                 <div class="py-6 text-gray-400 text-center">Sin movimientos recientes.</div>
