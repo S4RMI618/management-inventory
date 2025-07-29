@@ -5,89 +5,112 @@
     </x-slot>
 
     <x-alert />
-    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
+    <div class="md:p-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
-                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-10">
-                <form method="POST" action="{{ route('traslados.store') }}" id="traslado-form">
+                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-6 md:p-10">
+                <form method="POST" action="{{ route('traslados.store') }}" id="traslado-form"
+                    class="grid md:grid-cols-2 md:gap-6 md:mt-6">
                     @csrf
 
-                    {{-- Almacén Origen --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Almacén Origen</label>
-                        <select name="almacen_origen_id" id="almacen-origen"
-                            class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200">
-                            <option value="">– Seleccione –</option>
-                            @foreach ($almacenes as $alm)
-                                <option value="{{ $alm->id }}">{{ $alm->nombre }}</option>
-                            @endforeach
-                        </select>
-                        @error('almacen_origen_id')
-                            <p class="text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Producto (arranca deshabilitado) --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Producto</label>
-                        <select name="producto_id" id="producto-select"
-                            class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
-                            disabled>
-                            <option value="">– Seleccione Almacén Primero –</option>
-                        </select>
-                        @error('producto_id')
-                            <p class="text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Lotes (checkboxes) --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Lotes Disponibles</label>
-                        <div id="lotes-checkboxes" class="border rounded p-2 min-h-[60px] border-primary-light">
-                            {{-- se llenará vía JS --}}
+                    {{-- Columna izquierda: Datos del traslado --}}
+                    <div class="space-y-4">
+                        {{-- Almacén Origen --}}
+                        <div>
+                            <label class="text-white block mb-1">Almacén Origen</label>
+                            <select name="almacen_origen_id" id="almacen-origen"
+                                class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white px-4 py-2 focus:ring-2 focus:ring-primary">
+                                <option value="">– Seleccione –</option>
+                                @foreach ($almacenes as $alm)
+                                    <option value="{{ $alm->id }}">{{ $alm->nombre }}</option>
+                                @endforeach
+                            </select>
+                            @error('almacen_origen_id')
+                                <p class="text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('lote_ids')
-                            <p class="text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
 
-                    {{-- Series por lote --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Series a Trasladar</label>
-                        <div id="series-container" class="border rounded p-2 min-h-[80px] border-primary-light">
-                            {{-- se llenará vía JS --}}
+                        {{-- Producto --}}
+                        <div>
+                            <label class="text-white block mb-1">Producto</label>
+                            <select name="producto_id" id="producto-select"
+                                class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white px-4 py-2 focus:ring-2 focus:ring-primary"
+                                disabled>
+                                <option value="">– Seleccione Almacén Primero –</option>
+                            </select>
+                            @error('producto_id')
+                                <p class="text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('series_ids')
-                            <p class="text-red-600">{{ $message }}</p>
-                        @enderror
+
+                        {{-- Lotes disponibles --}}
+                        <div>
+                            <label class="text-white block mb-1">Lotes Disponibles</label>
+                            <div id="lotes-checkboxes"
+                                class="border rounded-lg p-3 min-h-[60px] bg-primary-bg text-white border-primary-light space-y-2">
+                                {{-- llenado dinámico --}}
+                            </div>
+                            @error('lote_ids')
+                                <p class="text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="md:hidden block">
+                            {{-- Título de la sección --}}
+                            <h3 class="text-accent text-xl font-semibold">Series a Trasladar</h3>
+                            <div
+                                class="bg-primary-soft rounded-xl p-4 border border-primary-light overflow-y-auto min-h-[20vh]">
+
+                                <div id="series-container" class="space-y-6 text-white">
+                                    {{-- dinámico por JS --}}
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Almacén Destino --}}
+                        <div>
+                            <label class="text-white block mb-1">Almacén Destino</label>
+                            <select name="almacen_destino_id"
+                                class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white px-4 py-2 focus:ring-2 focus:ring-primary">
+                                <option value="">– Seleccione –</option>
+                                @foreach ($almacenes as $alm)
+                                    <option value="{{ $alm->id }}">{{ $alm->nombre }}</option>
+                                @endforeach
+                            </select>
+                            @error('almacen_destino_id')
+                                <p class="text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Observaciones --}}
+                        <div>
+                            <label class="text-white block mb-1">Observaciones (opcional)</label>
+                            <textarea name="observaciones" rows="3"
+                                class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white px-4 py-2 focus:ring-2 focus:ring-primary">{{ old('observaciones') }}</textarea>
+                        </div>
                     </div>
 
-                    {{-- Almacén Destino --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Almacén Destino</label>
-                        <select name="almacen_destino_id"
-                            class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200">
-                            <option value="">– Seleccione –</option>
-                            @foreach ($almacenes as $alm)
-                                <option value="{{ $alm->id }}">{{ $alm->nombre }}</option>
-                            @endforeach
-                        </select>
-                        @error('almacen_destino_id')
-                            <p class="text-red-600">{{ $message }}</p>
-                        @enderror
+                    {{-- Columna derecha: Series --}}
+                    <div class="hidden md:block">
+                        {{-- Título de la sección --}}
+                        <h3 class="text-accent text-xl font-semibold">Series a Trasladar</h3>
+                        <div
+                            class="bg-primary-soft rounded-xl p-4 border border-primary-light overflow-y-auto min-h-[30vh] md:max-h-[80vh] md:min-h-[80vh]">
+
+                            <div id="series-container" class="space-y-6 text-white">
+                                {{-- dinámico por JS --}}
+                            </div>
+                        </div>
                     </div>
 
-                    {{-- Observaciones --}}
-                    <div class="mb-4">
-                        <label class="text-white w-full block mb-1">Observaciones (opcional)</label>
-                        <textarea name="observaciones"
-                            class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
-                            rows="3">{{ old('observaciones') }}</textarea>
+                    {{-- Botón submit debajo del grid (ocupa ambas columnas) --}}
+                    <div class="md:col-span-2 flex mt-4">
+                        <button type="submit"
+                            class="w-full md:w-auto bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-6 py-3 rounded-xl shadow-xl">
+                            Transferir
+                        </button>
                     </div>
-
-                    <button type="submit"
-                        class="bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-4 py-2 rounded-md shadow-x">Transferir</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -161,7 +184,7 @@
 
                             if (chk.checked) {
                                 seriesCont.insertAdjacentHTML('beforeend', `
-        <div id="${group}"class="mb-6 p-4">
+        <div id="${group}"class="mb-2 md:mb-6 p-2 md:p-4">
             <div class="flex items-center justify-between gap-1">
                 <strong class="text-accent text-2xl">Lote ${loteId}</strong>
                 <label class="flex items-center gap-2 text-primary-light cursor-pointer select-none">

@@ -4,16 +4,16 @@
     </x-slot>
 
     <x-alert />
-
-    <div class="p-12">
+    <div class="md:p-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
-                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-10">
-                <form method="POST" action="{{ route('ventas.store') }}" id="form-venta" class="mt-6 space-y-4">
+                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-4 md:p-10">
+                <form method="POST" action="{{ route('ventas.store') }}" id="form-venta"
+                    class="grid md:grid-cols-2 md:gap-4 items-center mt-6 md:space-y-4">
                     @csrf
 
                     {{-- 1) Selección de almacén --}}
-                    <div>
+                    <div class="col-span-2 mb-4">
                         <label class="text-white">Almacén</label>
                         <select name="almacen_id" id="almacen_id"
                             class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
@@ -25,7 +25,7 @@
                         </select>
                     </div>
                     {{-- 2) Input de búsqueda de cliente --}}
-                    <div class="mb-4 relative">
+                    <div class="col-span-2 mb-4 relative">
                         <label class="text-white">Cliente</label>
                         <input type="text" id="cliente_buscador"
                             class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2"
@@ -38,27 +38,27 @@
 
 
                     {{-- 2) Input de búsqueda --}}
-                    <div class="flex flex-col items-center">
+                    <div class="w-full flex flex-col items-center col-span-2">
                         <label class="text-white w-full">Buscar producto (código, modelo, lote, serie):</label>
-                        <div class="md:flex items-center gap-2 w-full">
+                        <div class="grid items-stretch place-items-center md:grid-cols-4 gap-4 w-full">
                             <input id="buscador" type="text"
-                                class="w-full border-2 border-primary-light rounded-xl bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
+                                class="col-span-3 w-full border-2 border-primary-light rounded-xl bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
                                 autocomplete="off">
                             <button type="button" id="buscarBtn"
-                                class="bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-4 py-2 rounded-md shadow-xl">Buscar</button>
+                                class="col-span-3 md:col-span-1 w-full bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-4 py-2 rounded-md shadow-xl">Buscar</button>
                         </div>
                     </div>
 
-                    <!-- Donde antes iba la tabla -->
-                    <div class="mt-6">
+                    <div class="mt-6 col-span-2 mb-6">
                         <!-- Encabezado -->
                         <div
-                            class="grid grid-cols-7 bg-primary-dark text-white rounded-t-xl font-bold text-center py-2 place-items-center">
+                            class="grid grid-cols-8 md:grid-cols-7 bg-primary-dark text-white rounded-t-xl font-bold text-center py-2 place-items-center">
                             <div>#</div>
                             <div class="col-span-3 text-left">Descripción</div>
                             <div class="hidden md:block">Cantidad</div>
                             <div class="md:hidden block">Cant</div>
-                            <div>Precio Unitario</div>
+                            <div class="hidden md:block">Precio Unitario</div>
+                            <div class="md:hidden block col-span-2 md:col-span-1">$</div>
                             <div class="flex items-center justify-center gap-2">
                                 <button id="btnEliminarSeleccionados" type="button"
                                     class="ml-2 text-red-400 hover:text-red-700 text-xl px-2 py-0 rounded transition-all duration-150"
@@ -74,24 +74,40 @@
                     <input type="hidden" name="detalle_venta" id="detalle_venta">
 
                     <button type="submit"
-                        class="bg-primary-bg text-white hover:bg-accent-bright hover:scale-105 active:scale-95 transition-all duration-200 px-6 py-2 rounded-lg">Registrar
-                        Venta</button>
+                        class="col-span-2 justify-self-center bg-primary-bg text-white hover:bg-accent-bright hover:scale-105 active:scale-95 transition-all duration-200 px-6 py-2 rounded-lg">
+                        Registrar Venta
+                    </button>
                 </form>
 
                 {{-- Modal de selección múltiple --}}
                 <div id="modalSeleccion"
-                    class="fixed inset-0 bg-primary-bg/70 hidden flex items-center justify-center z-50 transition-opacity duration-300">
+                    class="fixed inset-0 z-50 hidden bg-primary-bg/80 backdrop-blur-sm transition-opacity duration-300 flex items-center justify-center">
                     <div id="modalBox"
-                        class="bg-gradient-to-br from-primary-dark to-primary-soft rounded-2xl shadow-2xl w-full max-w-lg p-6 transform scale-95 opacity-0 transition-all duration-300 border-4 border-[#1EA7FD]">
-                        <h2 class="text-2xl font-bold text-white mb-4" id="modalTitulo"></h2>
-                        <div id="modalCuerpo" class="text-white"></div>
-                        <div class="text-right mt-4 flex gap-2 justify-end">
+                        class="bg-gradient-to-br from-primary-dark to-primary-soft rounded-2xl shadow-xl border-t-4 border-primary w-full max-w-2xl p-6 transform scale-95 opacity-0 transition-all duration-300">
+
+                        <!-- Encabezado -->
+                        <div class="flex items-center justify-between mb-4 border-b border-primary-light pb-3">
+                            <h2 id="modalTitulo" class="text-2xl font-bold text-white">Seleccionar Producto</h2>
                             <button id="cerrarModal"
-                                class="text-[#1EA7FD] bg-white hover:bg-primary hover:text-white transition-transform duration-200 px-5 py-2 rounded-lg shadow-sm transform hover:scale-105 active:scale-95">
+                                class="text-white hover:text-accent-bright transition-all text-2xl font-light">
+                                &times;
+                            </button>
+                        </div>
+
+                        <!-- Cuerpo -->
+                        <div id="modalCuerpo"
+                            class="text-white max-h-[60vh] overflow-y-auto space-y-2 text-sm md:text-base px-1">
+                            <!-- Radios o checkboxes dinámicos aquí -->
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="flex justify-end mt-6 gap-3 pt-4 border-t border-primary-light">
+                            <button id="cerrarModal"
+                                class="bg-primary-soft text-white hover:bg-primary-dark px-5 py-2 rounded-lg transition-all duration-200">
                                 Cancelar
                             </button>
                             <button id="agregarSeleccion"
-                                class="bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-6 py-2 rounded-lg shadow-xl opacity-60 cursor-not-allowed"
+                                class="bg-accent text-primary-dark hover:bg-accent-bright hover:scale-105 active:scale-95 transition-all duration-200 px-6 py-2 rounded-xl shadow-xl opacity-60 cursor-not-allowed"
                                 disabled>
                                 Agregar
                             </button>
@@ -331,7 +347,7 @@
                     }
 
                     grid.innerHTML += `
-            <div class="grid grid-cols-7 items-center border-b text-white border-primary-soft py-2 hover:bg-primary-dark/40 transition cursor-pointer group" data-idx="${idx}">
+            <div class="grid grid-cols-8 md:grid-cols-7 items-center border-b text-white border-primary-soft py-2 hover:bg-primary-dark/40 transition cursor-pointer group" data-idx="${idx}">
                 <div class="text-center">${idx + 1}</div>
                 <div class="col-span-3 pl-2">${descripcion}</div>
                 <div class="text-center">
@@ -341,7 +357,7 @@
                         : `1`
                     }
                 </div>
-                <div class="text-center">$${Number(item.precio_venta || 0).toLocaleString()}</div>
+                <div class="text-center col-span-2 md:col-span-1">$${Number(item.precio_venta || 0).toLocaleString()}</div>
                 <div class="flex items-center justify-center pl-2">
                     <input type="checkbox" class="checkbox-borrar" data-idx="${idx}">
                 </div>

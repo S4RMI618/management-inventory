@@ -9,7 +9,7 @@
     <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div
-                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-10">
+                class="bg-gradient-to-br from-primary-dark to-primary-soft border-4 border-primary shadow-2xl rounded-lg p-4 md:p-10">
 
                 {{-- Buscar Serie --}}
                 <div class="mb-4 flex gap-2">
@@ -61,7 +61,7 @@
 
                     {{-- Botón --}}
                     <button type="submit"
-                        class="bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-4 py-2 rounded-md shadow-x">
+                        class="w-full md:w-auto bg-primary text-white hover:bg-accent hover:scale-105 active:scale-95 transition-all duration-200 px-4 py-2 rounded-md shadow-x">
                         Registrar Devolución
                     </button>
                 </form>

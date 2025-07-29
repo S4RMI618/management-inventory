@@ -61,7 +61,7 @@ class EntradaController extends Controller
             'fecha_fabricacion'  => 'required|date',
             'tiene_vencimiento'  => 'nullable',
             'fecha_vencimiento'  => 'nullable|date|after_or_equal:fecha_fabricacion',
-            'tiene_invima'       => 'required|string|in:on,null',
+            'tiene_invima'       => 'required|boolean',
         ], $mensajes);
 
         try {
@@ -80,7 +80,7 @@ class EntradaController extends Controller
                         ? $request->fecha_vencimiento
                         : null;
                     // Checkbox INVIMA → 1 o 0
-                    $lote->tiene_invima = $request->has('tiene_invima') ? 1 : 0;
+                    $lote->tiene_invima = $request->boolean('tiene_invima');
                     $lote->save();
                 }
                 // Obtener el ID del lote recién creado o actualizado
