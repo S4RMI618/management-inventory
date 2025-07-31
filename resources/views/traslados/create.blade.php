@@ -196,7 +196,6 @@
                 Cargando Series…
             </div>
         </div>
-
           `);
 
                                 fetch(`/lotes/${loteId}/series?origen=${almId}`)

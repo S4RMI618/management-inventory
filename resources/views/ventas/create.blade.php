@@ -70,6 +70,12 @@
                         <div id="productosSeleccionadosGrid"></div>
                     </div>
 
+                    <div class="col-span-2 mb-4">
+                        <label class="text-white">Referencia Externa</label>
+                        <input type="text" id="referencia_externa" name="referencia_externa"
+                            class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2"
+                            placeholder="" autocomplete="off">
+                    </div>
 
                     <input type="hidden" name="detalle_venta" id="detalle_venta">
 

@@ -144,6 +144,7 @@ class VentaController extends Controller
         $almacen_id = $request->input('almacen_id');
         $socio_comercial_id = $request->input('socio_comercial_id');
         $detalle = json_decode($request->input('detalle_venta'), true);
+        $referencia_externa = $request->input('referencia_externa', null);
 
         if (!is_array($detalle) || empty($detalle)) {
             return back()->with('error', 'No se recibieron productos para la venta.');
@@ -186,7 +187,7 @@ class VentaController extends Controller
                                 'usuario_id'          => Auth::id(),
                                 'tipo'                => 'traslado',
                                 'cantidad'            => 1,
-                                'referencia_externa'  => null,
+                                'referencia_externa'  => $referencia_externa,
                                 'fecha_documento'     => now(),
                                 'observaciones'       => 'Traslado automático previo a venta (lote)',
                             ]);
@@ -217,7 +218,7 @@ class VentaController extends Controller
                             'usuario_id'          => Auth::id(),
                             'tipo'                => 'salida',
                             'cantidad'            => 1,
-                            'referencia_externa'  => null,
+                            'referencia_externa'  => $referencia_externa,
                             'fecha_documento'     => now(),
                             'observaciones'       => 'Venta por lote. Serie: ' . $serie->numero_serie,
                             'created_at'          => now(),
@@ -245,7 +246,7 @@ class VentaController extends Controller
                                 'usuario_id'          => Auth::id(),
                                 'tipo'                => 'traslado',
                                 'cantidad'            => 1,
-                                'referencia_externa'  => null,
+                                'referencia_externa'  => $referencia_externa,
                                 'fecha_documento'     => now(),
                                 'observaciones'       => 'Traslado automático previo a venta (serie)',
                             ]);
@@ -273,7 +274,7 @@ class VentaController extends Controller
                             'usuario_id'          => Auth::id(),
                             'tipo'                => 'salida',
                             'cantidad'            => 1,
-                            'referencia_externa'  => null,
+                            'referencia_externa'  => $referencia_externa,
                             'fecha_documento'     => now(),
                             'observaciones'       => 'Venta por serie: ' . $serie->numero_serie,
                             'created_at'          => now(),
