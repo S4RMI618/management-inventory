@@ -60,7 +60,7 @@
                             <div
                                 class="bg-primary-soft rounded-xl p-4 border border-primary-light overflow-y-auto min-h-[20vh]">
 
-                                <div id="series-container" class="space-y-6 text-white">
+                                <div id="series-container2" class="space-y-6 text-white">
                                     {{-- dinámico por JS --}}
                                 </div>
                             </div>
@@ -122,7 +122,9 @@
                 const origenSelect = document.getElementById('almacen-origen');
                 const productoSelect = document.getElementById('producto-select');
                 const lotesDiv = document.getElementById('lotes-checkboxes');
-                const seriesCont = document.getElementById('series-container');
+                const seriesCont = window.innerWidth < 768 ?
+                    document.getElementById('series-container2') :
+                    document.getElementById('series-container');
 
                 origenSelect.addEventListener('change', () => {
                     console.log('🏷️ Almacén Seleccionado:', origenSelect.value);
