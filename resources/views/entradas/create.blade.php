@@ -288,13 +288,14 @@
                         }
                     }
                 });
-                // Búsqueda, flechas y modal (igual que antes)
+                // Evento de búsqueda
                 buscarInput.addEventListener('input', () => {
                     const txt = buscarInput.value.toLowerCase().trim();
                     resultadoBox.innerHTML = '';
                     resultadoBox.classList.add('hidden');
                     opciones = [];
                     currentIndex = -1;
+
                     if (txt.length < 3) return;
 
                     const filtrados = productos.filter(p =>
@@ -302,15 +303,16 @@
                         (p.modelo && p.modelo.toLowerCase().includes(txt)) ||
                         p.codigo.toLowerCase().includes(txt)
                     );
+
                     if (!filtrados.length) return;
 
                     resultadoBox.classList.remove('hidden');
-                    filtrados.forEach((p, i) => {
+
+                    filtrados.forEach((p) => {
                         const opt = document.createElement('div');
                         opt.classList.add('p-2', 'cursor-pointer', 'hover:bg-gray-100');
                         opt.textContent =
                             `${p.nombre} (${p.modelo ?? '-'}) — ${p.marca?.nombre ?? 'Sin marca'} — ${p.codigo}`;
-                        opt.dataset.index = i;
                         opt.onclick = () => {
                             const mismos = filtrados.filter(x => x.nombre === p.nombre);
                             if (mismos.length > 1) {
@@ -330,26 +332,35 @@
                         };
                         resultadoBox.appendChild(opt);
                     });
+
                     opciones = Array.from(resultadoBox.children);
+
                     if (opciones.length) {
                         currentIndex = 0;
-                        limpiarPreseleccion();
                         actualizarPreseleccion();
                     }
                 });
+
+                // Navegación con flechas y selección con Enter
                 buscarInput.addEventListener('keydown', e => {
-                    if (!opciones.length || !['ArrowUp', 'ArrowDown', 'Enter'].includes(e.key)) return;
-                    e.preventDefault();
+                    if (!opciones.length) return;
+
                     if (e.key === 'ArrowDown') {
+                        e.preventDefault();
                         currentIndex = (currentIndex + 1) % opciones.length;
                         actualizarPreseleccion();
                     } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
                         currentIndex = (currentIndex - 1 + opciones.length) % opciones.length;
                         actualizarPreseleccion();
-                    } else {
-                        opciones[currentIndex].click();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (currentIndex >= 0 && currentIndex < opciones.length) {
+                            opciones[currentIndex].click();
+                        }
                     }
                 });
+
 
                 // Series → cantidad
                 seriesInput.addEventListener('input', actualizarCantidad);

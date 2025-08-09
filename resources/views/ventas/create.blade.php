@@ -573,6 +573,42 @@
                 }
             }
 
+            buscador.addEventListener('keydown', function(e) {
+                if (e.key === "Enter" && document.activeElement === buscador) {
+                    e.preventDefault(); // Prevenir el comportamiento por defecto
+                    buscarProducto(); // Ejecutar la búsqueda
+                }
+            });
+
+            // Función para manejar la navegación con Enter
+            function manejarNavegacionEnter(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+
+                    // Obtenemos todos los campos navegables en orden
+                    const campos = [
+                        document.getElementById('almacen_id'),
+                        document.getElementById('cliente_buscador'),
+                        document.getElementById('buscador')
+                    ];
+
+                    // Encontramos el índice del campo actual
+                    const currentIndex = campos.indexOf(e.target);
+
+                    // Si encontramos el campo y no es el último, movemos el foco al siguiente
+                    if (currentIndex > -1 && currentIndex < campos.length - 1) {
+                        campos[currentIndex + 1].focus();
+                    } else if (currentIndex === campos.length - 1) {
+                        // Si es el último campo (el buscador), ejecutamos la búsqueda
+                        buscarProducto();
+                    }
+                }
+            }
+
+            // Agregamos los event listeners a los campos
+            document.getElementById('almacen_id').addEventListener('keydown', manejarNavegacionEnter);
+            document.getElementById('cliente_buscador').addEventListener('keydown', manejarNavegacionEnter);
+            document.getElementById('buscador').addEventListener('keydown', manejarNavegacionEnter);
             // -------------------------------
             // LIMPIAR SELECCIÓN TRAS VENTA EXITOSA
             document.addEventListener('DOMContentLoaded', () => {
