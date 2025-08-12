@@ -23,6 +23,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     /* DASHBOARD */
+    Route::get('/productos/buscar', [EntradaController::class, 'buscarProductos'])
+        ->name('productos.buscar');
+        
     Route::post('/buscar-producto', [ProductSearchController::class, 'buscar'])->name('buscar.producto');
     Route::post('/buscar-datos-producto', [FiltrarProductoController::class, 'buscar'])->name('producto.buscar.ajax');
 
@@ -34,6 +37,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/venta/buscar', [VentaController::class, 'buscarProducto'])->name('ventas.buscar');
     // Ruta para buscar clientes en la venta
     Route::get('/clientes/buscar', [VentaController::class, 'buscarCliente'])->name('clientes.buscar');
+
+
 
 
 

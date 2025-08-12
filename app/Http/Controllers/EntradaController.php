@@ -57,7 +57,7 @@ class EntradaController extends Controller
             'producto_id' => 'required|exists:productos,id',
             'almacen_id'  => 'required|exists:almacenes,id',
             'series'      => 'required|string',
-            'numero_lote' => 'required|string|max:255',
+            'numero_lote' => 'required|string|max:50',
             'fecha_fabricacion'  => 'required|date',
             'tiene_vencimiento'  => 'nullable',
             'fecha_vencimiento'  => 'nullable|date|after_or_equal:fecha_fabricacion',
