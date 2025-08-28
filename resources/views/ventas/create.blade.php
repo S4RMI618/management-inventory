@@ -13,7 +13,7 @@
                     @csrf
 
                     {{-- 1) Selección de almacén --}}
-                    <div class="col-span-2 mb-4">
+                    <div class="mb-4">
                         <label class="text-white">Almacén</label>
                         <select name="almacen_id" id="almacen_id"
                             class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2 focus:border-primary focus:ring-2 focus:ring-primary transition-all duration-200"
@@ -25,7 +25,7 @@
                         </select>
                     </div>
                     {{-- 2) Input de búsqueda de cliente --}}
-                    <div class="col-span-2 mb-4 relative">
+                    <div class="mb-4 relative">
                         <label class="text-white">Cliente</label>
                         <input type="text" id="cliente_buscador"
                             class="w-full border-2 border-primary-light rounded-lg bg-primary-bg text-white placeholder-gray-400 px-4 py-2"
@@ -68,6 +68,12 @@
                             </div>
                         </div>
                         <div id="productosSeleccionadosGrid"></div>
+                        <div class="grid grid-cols-2">
+                            <div class="text-white bg-primary-dark p-2 rounded-xl mt-2">
+                                Total Productos/Series: <span id="totalItems"
+                                    class="font-bold">{{ count($productosSeleccionados ?? []) }}</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="col-span-2 mb-4">
@@ -329,6 +335,14 @@
             function renderizarTabla() {
                 const grid = document.getElementById('productosSeleccionadosGrid');
                 grid.innerHTML = '';
+
+                if (!productosSeleccionados.length) {
+                    grid.innerHTML =
+                        `<div class="grid grid-cols-8 md:grid-cols-7 min-w-[750px] items-center border-b border-primary-soft text-white py-3 px-2">
+           <div class="col-span-8 text-center text-gray-400">No Se Han Seleccionado Productos</div>
+         </div>`;
+                    return;
+                }
                 productosSeleccionados.forEach((item, idx) => {
                     // Series del lote o serie individual
                     let series = '';

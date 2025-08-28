@@ -18,8 +18,8 @@ class MovimientosInventarioSeeder extends Seeder
         $socio = SocioComercial::first();
         $usuario = User::first(); // Asegúrate de tener al menos un usuario en users
 
-        if ($productos->count() < 2 || $almacenes->count() < 2 || !$usuario) {
-            echo "Se necesitan al menos 2 productos, 2 almacenes y 1 usuario para este seeder.\n";
+        if ($productos->count() < 2 || $almacenes->count() < 2 || !$usuario || !$socio) {
+            echo "Faltan datos para movimientos.\n";
             return;
         }
 
@@ -85,4 +85,3 @@ class MovimientosInventarioSeeder extends Seeder
         ]);
     }
 }
-

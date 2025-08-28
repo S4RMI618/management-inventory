@@ -16,6 +16,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('producto_id')->constrained();
             $table->foreignId('almacen_id')->constrained('almacenes');
+            $table->foreignId('lote_id')->nullable();
+            $table->foreign('lote_id')
+                ->references('id')
+                ->on('lotes')
+                ->onDelete('set null');
             $table->string('numero_serie')->unique();
             $table->enum('estado', ['disponible', 'vendida', 'averiada', 'vencida', 'mal_estado'])->default('disponible');
             $table->timestamps();

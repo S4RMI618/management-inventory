@@ -13,28 +13,40 @@ class InventariosSeeder extends Seeder
     public function run(): void
     {
         $almacen = Almacen::first();
+        if (!$almacen) {
+            echo "No hay almacenes para registrar inventarios.\n";
+            return;
+        }
+
         $productos = Producto::all();
 
         foreach ($productos as $producto) {
-            // Contar cuántas series disponibles hay para el producto en el almacén
             $cantidadSeries = Serie::where('producto_id', $producto->id)
-                                    ->where('almacen_id', $almacen->id)
-                                    ->count();
+                ->where('almacen_id', $almacen->id)
+                ->where('estado', 'disponible') // evita contar las vendidas
+                ->count();
 
-            // Registrar inventario solo si hay series asociadas
             if ($cantidadSeries > 0) {
+                $costoUnitario = (float) ($producto->precio_costo ?? 0);
+
+                // ===== Elige UNA de las dos opciones =====
+                // Opción A: guardar costo UNITARIO
+                $costo = $costoUnitario;
+
+                // Opción B: guardar costo TOTAL del inventario
+                // $costo = $costoUnitario * $cantidadSeries;
+
                 Inventario::updateOrCreate(
                     [
                         'producto_id' => $producto->id,
-                        'almacen_id' => $almacen->id,
+                        'almacen_id'  => $almacen->id,
                     ],
                     [
                         'cantidad' => $cantidadSeries,
+                        'costo'    => $costo,
                     ]
                 );
             }
         }
     }
 }
-
-

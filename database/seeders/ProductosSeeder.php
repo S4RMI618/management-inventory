@@ -31,6 +31,7 @@ class ProductosSeeder extends Seeder
                 'precio_venta' => 1500000,
                 'ubicacion' => 'Estante 1',
                 'estado' => 'activo',
+                'tiene_series' => true,
                 'tiene_invima' => false,
             ],
             [
@@ -43,6 +44,7 @@ class ProductosSeeder extends Seeder
                 'precio_venta' => 2500000,
                 'ubicacion' => 'Bodega',
                 'estado' => 'activo',
+                'tiene_series' => true,
                 'tiene_invima' => false,
             ],
             [
@@ -55,6 +57,7 @@ class ProductosSeeder extends Seeder
                 'precio_venta' => 3600000,
                 'ubicacion' => 'Oficina',
                 'estado' => 'activo',
+                'tiene_series' => true,
                 'tiene_invima' => false,
             ],
             [
@@ -67,6 +70,7 @@ class ProductosSeeder extends Seeder
                 'precio_venta' => 9000,
                 'ubicacion' => 'Góndola 3',
                 'estado' => 'activo',
+                'tiene_series' => false,
                 'tiene_invima' => true,
             ],
             [
@@ -79,6 +83,7 @@ class ProductosSeeder extends Seeder
                 'precio_venta' => 600000,
                 'ubicacion' => 'Estante alto',
                 'estado' => 'activo',
+                'tiene_series' => true,
                 'tiene_invima' => true,
             ],
         ]);

@@ -18,7 +18,7 @@ class LotesSeeder extends Seeder
 
         foreach ($productos as $producto) {
             $categoria = optional($producto->categoria)->nombre;
-            $requiereVencimiento = strtolower($categoria) === 'Comida';
+            $requiereVencimiento = strtolower(optional($producto->categoria)->nombre ?? '') === 'comida';
 
             // Definimos un número fijo de unidades por lote (ej. 5 unidades)
             $cantidad = 5;

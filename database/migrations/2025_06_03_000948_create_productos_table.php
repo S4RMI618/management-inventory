@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('precio_venta', 15, 2);
             $table->string('ubicacion')->nullable();
             $table->string('estado');
+            $table->boolean('tiene_series')->default(true);
             $table->boolean('tiene_invima')->default(false);
             $table->timestamps();
         });

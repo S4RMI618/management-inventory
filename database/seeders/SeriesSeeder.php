@@ -13,33 +13,37 @@ class SeriesSeeder extends Seeder
     public function run(): void
     {
         $almacen = Almacen::first();
+        if (!$almacen) {
+            echo "No hay almacenes; no se pueden crear series.\n";
+            return;
+        }
 
-        // Crea 3 productos de ejemplo
-        foreach (range(1, 3) as $numProd) {
-            $producto = Producto::create([
-                'codigo' => 'PROD00' . $numProd,
-                'nombre' => 'Producto ' . $numProd,
-                // Agrega los demás campos obligatorios según tu modelo...
-            ]);
+        // Toma algunos productos existentes (o quita take(3) para usar todos)
+        $productos = Producto::take(3)->get();
+        if ($productos->isEmpty()) {
+            echo "No hay productos; no se pueden crear series.\n";
+            return;
+        }
 
-            // Cada producto tendrá 2 lotes
+        foreach ($productos as $producto) {
+            // 2 lotes por producto
             foreach (range(1, 2) as $numLote) {
                 $lote = Lote::create([
-                    'producto_id' => $producto->id,
-                    'numero_lote' => 'LOTE' . $numProd . $numLote,
-                    'fecha_fabricacion' => now()->subMonths(rand(1, 5)),
-                    'fecha_vencimiento' => now()->addMonths(rand(6, 12)),
-                    'tiene_invima' => false,
+                    'producto_id'        => $producto->id,
+                    'numero_lote'        => 'LOTE' . $producto->id . $numLote,
+                    'fecha_fabricacion'  => now()->subMonths(rand(1, 5)),
+                    'fecha_vencimiento'  => now()->addMonths(rand(6, 12)),
+                    'tiene_invima'       => (bool) $producto->tiene_invima,
                 ]);
 
-                // Cada lote tendrá 5 series
+                // 5 series por lote
                 foreach (range(1, 5) as $numSerie) {
                     Serie::create([
-                        'producto_id' => $producto->id,
-                        'almacen_id' => $almacen->id,
-                        'numero_serie' => 'SERIE-' . $numProd . $numLote . sprintf('%03d', $numSerie),
-                        'estado' => ($numSerie === 1) ? 'vendida' : 'disponible', // Primera serie "vendida", resto "disponible"
-                        'lote_id' => $lote->id,
+                        'producto_id'  => $producto->id,
+                        'almacen_id'   => $almacen->id,
+                        'numero_serie' => 'SERIE-' . $producto->id . $numLote . sprintf('%03d', $numSerie),
+                        'estado'       => ($numSerie === 1) ? 'vendida' : 'disponible',
+                        'lote_id'      => $lote->id,
                     ]);
                 }
             }

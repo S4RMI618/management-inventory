@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('fecha_fabricacion')->nullable();
             $table->date('fecha_vencimiento')->nullable();
             $table->boolean('tiene_invima')->default(false);
+            $table->string('estado')->default('disponible')->comment('Estado del lote: disponible, agotado, vencido');
             $table->timestamps();
         });
     }
